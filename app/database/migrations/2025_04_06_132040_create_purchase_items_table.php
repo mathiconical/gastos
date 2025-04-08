@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('purchase_items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Purchase::class)->index();
+            $table->string('name')->index();
             $table->decimal('price', 15, 2);
             $table->decimal('amount', 15, 4);
             $table->foreignIdFor(Unit::class)->index();

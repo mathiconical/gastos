@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->index();
+            $table->string('key')->index()->unique();
             $table->foreignIdFor(User::class)->index();
             $table->unique(['user_id', 'id']);
             $table->boolean('processed')->default(false);
