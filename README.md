@@ -19,14 +19,16 @@ A primeiro momento, para armazenar informaçoes de preços de produtos e valores
 - **[Filament](https://filamentphp.com/)**
 - **[Make (Opcional)](https://www.gnu.org/software/make/manual/make.html)**
 
-
 ## Executar o Projeto
+
 1.
+
 ```
 docker build -t php --tag php8.4.4-fpm-alpine3.21 .
 ```
 
 2.
+
 ```
 docker run -it --name php -v ./app/:/usr/app \
     --network appnet \
@@ -41,6 +43,7 @@ docker run -it --name php -v ./app/:/usr/app \
 ```
 
 3.
+
 ```
 abrir o browser **http://localhost:9000/admin**
 email: test@mail.com
@@ -53,3 +56,10 @@ senha: password
 - Leia o QR Code ou copie a chave da NFCe composto por 44 caracteres, por exemplo: _31236549785820000139650010000706931123456789_
 - Apos o login, va ate entrada, adicione um cupom e salve.
 - Apos salvar, o cupom sera processado e ira criar registros em compras e unidades.
+
+### TODOs
+
+- Passar pelo captcha da cloudflare.
+- Criar um dashboard com graficos e pesquisas.
+- Adicionar pesquisa global.
+- Adicionar testes.
