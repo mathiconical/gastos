@@ -3,5 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    // temporary redirect until the example page its finish
+    return redirect()->to('/admin');
 });
