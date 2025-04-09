@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -48,23 +49,33 @@ class PurchaseResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('coupon_id')
-                    ->numeric()
+                    ->label('Cupom ID')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total')
-                    ->numeric()
+                    ->money('BRL')
+                    ->searchable()
+                    ->label('Total')
+                    ->summarize(Sum::make()->label('Total')->money('BRL'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('items')
+                    ->label('Items')
                     ->numeric()
+                    ->searchable()
+                    ->summarize(Sum::make()->label('Total'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date')
-                    ->dateTime()
+                    ->dateTime('d/m/Y')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Criado Em')
+                    ->dateTime('d/m/Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->dateTime('d/m/Y H:i:s')
+                    ->label('Atualizado Em')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
