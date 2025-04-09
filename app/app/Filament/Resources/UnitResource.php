@@ -19,9 +19,11 @@ class UnitResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
 
-    protected static ?string $navigationLabel = 'Unitdades';
+    protected static ?string $navigationLabel = 'Unidades';
 
     protected static ?string $navigationGroup = 'Utilidades';
+
+    protected static ?string $label = 'Unidade';
 
     protected static ?int $navigationSort = 99;
 
@@ -63,7 +65,7 @@ class UnitResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
