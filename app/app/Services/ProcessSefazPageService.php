@@ -57,7 +57,7 @@ class ProcessSefazPageService
             }
 
             if ($idx % $this->total_column_per_item === 2) {
-                $products[$currentProduct]['unit'] = explode(': ', $fieldValue)[1];
+                $products[$currentProduct]['unit'] = strtoupper(explode(': ', $fieldValue)[1]);
             }
 
             if ($idx % $this->total_column_per_item === 3) {
