@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PurchaseItemResource\Pages;
 use App\Filament\Resources\PurchaseItemResource\RelationManagers;
 use App\Models\PurchaseItem;
+use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -59,13 +60,16 @@ class PurchaseItemResource extends Resource
                     ->label('Compra')
                     ->getStateUsing(fn(PurchaseItem $record): string => $record->purchase_id . ' - ' . $record->purchase->date->format('d/m/Y'))
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nome')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Preço')
                     ->money('BRL')
+                    ->searchable()
                     ->summarize(
                         Sum::make()
                             ->label('Total Preço')
@@ -75,14 +79,18 @@ class PurchaseItemResource extends Resource
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Quantidade')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('unit.abbr')
+                Tables\Columns\TextColumn::make('unit_id')
                     ->label('Unidade')
+                    ->getStateUsing(fn(PurchaseItem $record): string => ($record->unit->name === '' ? $record->unit->abbr : $record->unit->name))
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_item_price')
                     ->label('Total')
                     ->getStateUsing(fn(PurchaseItem $record): string => bcmul($record->price, $record->amount, 2))
                     ->money('BRL')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado Em')
