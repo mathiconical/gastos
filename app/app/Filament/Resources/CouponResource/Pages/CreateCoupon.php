@@ -3,8 +3,6 @@
 namespace App\Filament\Resources\CouponResource\Pages;
 
 use App\Filament\Resources\CouponResource;
-use App\Models\Purchase;
-use App\Models\PurchaseItem;
 use App\Services\ProcessCouponService;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
