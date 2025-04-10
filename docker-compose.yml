@@ -1,0 +1,22 @@
+version: "3"
+networks:
+  appnet:
+    driver: bridge
+services:
+  my-app:
+    build:
+      context: .
+    container_name: my-app
+    ports:
+      - 9090:9090
+    volumes:
+      - ./app/:/usr/app
+    networks:
+      - appnet
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        composer install
+        php artisan key:generate
+        php artisan migrate
+        php artisan serve --host=0.0.0.0 --port=9090

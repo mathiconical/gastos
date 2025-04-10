@@ -41,12 +41,18 @@ docker run -it --name php -v ./app/:/usr/app \
     localhost/php8.4.4-fpm-alpine3.21 \
     -c "composer install && php artisan serve --host=0.0.0.0 --port=9000"
 ```
+2.1
+
+```sh
+    # Outra alternativa para executar o projeto:
+    make up
+```
 
 3.
 
 ```
 abrir o browser **http://localhost:9000/admin**
-email: test@mail.com
+email: test@example.com
 senha: password
 ```
 

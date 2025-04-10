@@ -1,4 +1,4 @@
-.PHONY: run-php stop-php run-server
+.PHONY: run-php stop-php run-server up down exec
 
 run-php:
 	@if ! podman network ls --filter name=^appnet$$ --format '{{.Name}}' | grep -q appnet; then \
@@ -34,3 +34,14 @@ run-server:
 		--entrypoint /bin/sh \
 		localhost/php8.4.4-fpm-alpine3.21 \
 		-c "php artisan serve --host=0.0.0.0 --port=9000"
+
+up:
+	@echo "--> Starting services..."
+	@docker compose up -d
+
+down:
+	@echo "--> Stopping services..."
+	@docker compose down
+
+exec:
+	@docker exec -it my-app /bin/sh
