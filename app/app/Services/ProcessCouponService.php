@@ -32,11 +32,13 @@ class ProcessCouponService
             return;
         }
 
+        $date = $table['date'];
+        unset($table['date']);
         $purchase = Purchase::query()->create([
             'coupon_id' => $coupon->id,
             'total' => $table->sum('price'),
             'items' => $table->count(),
-            'date' => Carbon::now()->toDateTimeString(),
+            'date' => Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d'),
         ]);
 
         $table->each(function ($row) {
