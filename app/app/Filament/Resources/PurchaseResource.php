@@ -12,7 +12,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PurchaseResource extends Resource
 {
@@ -25,6 +24,12 @@ class PurchaseResource extends Resource
     protected static ?string $navigationGroup = 'Compras';
 
     protected static ?int $navigationSort = 0;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->join('coupons', 'coupons.id', '=', 'coupon_id')
+            ->where('coupons.visible', true);
+    }
 
     public static function form(Form $form): Form
     {
@@ -115,7 +120,7 @@ class PurchaseResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getEloquentQuery()->count();
     }
 
     public static function getNavigationBadgeColor(): string|array|null

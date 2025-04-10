@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Unit;
 use Illuminate\Database\Migrations\Migration;
@@ -16,7 +17,7 @@ return new class extends Migration
         Schema::create('purchase_items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Purchase::class)->index();
-            $table->string('name')->index();
+            $table->foreignIdFor(Product::class)->index();
             $table->decimal('price', 15, 2);
             $table->decimal('amount', 15, 4);
             $table->foreignIdFor(Unit::class)->index();

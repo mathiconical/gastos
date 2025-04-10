@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Models\Coupon;
+use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
 use App\Models\Unit;
-use App\Models\Utils\ParseHTMLTable;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Collection;
 
 class ProcessCouponService
 {
@@ -50,11 +50,16 @@ class ProcessCouponService
         });
 
         $table->each(function ($row) use ($purchase) {
+            $product = Product::query()->where('name', $row['name'])->first();
+            if (!$product) {
+                $product = Product::query()->create(['name' => $row['name']]);
+            }
+
             PurchaseItem::query()->insert([
                 'price' => bcdiv($row['price'], $row['amount'], 2),
                 'amount' => $row['amount'],
                 'unit_id' => Unit::query()->where('abbr', $row['unit'])->first()->id,
-                'name' => $row['name'],
+                'product_id' => $product->id,
                 'purchase_id' => $purchase->id,
             ]);
         });
@@ -64,5 +69,12 @@ class ProcessCouponService
             'processed' => true,
             'processed_timestamp' => Carbon::now()->toDateTimeString(),
         ]);
+    }
+
+    public function executeBatch(array|Collection $coupons): void
+    {
+        foreach ($coupons as $coupon) {
+            $this->execute($coupon);
+        }
     }
 }

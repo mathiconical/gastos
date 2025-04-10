@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CouponResource\Pages;
 use App\Filament\Resources\CouponResource\RelationManagers;
 use App\Models\Coupon;
+use App\Models\Scopes\CouponVisibleScope;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,13 +30,17 @@ class CouponResource extends Resource
 
     protected static ?int $navigationSort = 0;
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes([CouponVisibleScope::class]);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('key')
-                    ->label('Chave')
-                    ->required(),
+                    ->label('Chave'),
                 Forms\Components\Select::make('user_id')
                     ->label('Usuario')
                     ->disabled()
@@ -64,21 +69,25 @@ class CouponResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('processed')
                     ->label('Processado')
+                    ->searchable()
                     ->boolean(),
                 Tables\Columns\ToggleColumn::make('visible')
                     ->label('Visivel'),
                 Tables\Columns\TextColumn::make('processed_timestamp')
                     ->label('Processado Em')
-                    ->dateTime()
+                    ->dateTime('d/m/Y H:i:s')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado Em')
                     ->dateTime()
+                    ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Atualizado Em')
                     ->dateTime()
+                    ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -98,7 +107,7 @@ class CouponResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getEloquentQuery()->count();
     }
 
     public static function getNavigationBadgeColor(): string|array|null

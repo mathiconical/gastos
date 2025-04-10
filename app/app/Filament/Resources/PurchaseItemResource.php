@@ -28,6 +28,13 @@ class PurchaseItemResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->join('purchases', 'purchases.id', '=', 'purchase_id')
+            ->join('coupons', 'coupons.id', '=', 'purchases.coupon_id')
+            ->where('coupons.visible', true);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -62,7 +69,7 @@ class PurchaseItemResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('product.name')
                     ->label('Nome')
                     ->searchable()
                     ->sortable(),
@@ -131,7 +138,7 @@ class PurchaseItemResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getEloquentQuery()->count();
     }
 
     public static function getNavigationBadgeColor(): string|array|null

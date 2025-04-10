@@ -9,12 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class PurchaseItem extends Model
 {
     protected $fillable = [
-        'name',
+        'product_id',
         'price',
         'amount',
         'unit_id',
         'purchase_id',
     ];
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
 
     public function unit(): BelongsTo
     {
