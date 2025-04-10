@@ -66,6 +66,22 @@ class ProcessSefazPageService
             }
         });
 
+        $datetime_regex_pattern = '/^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4} ([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/';
+
+        $date = $crawler
+            ->filter('table.table.table-hover tbody tr td:nth-child(4)')
+            ->each(function (Crawler $node) use ($datetime_regex_pattern) {
+                $fullDateTime = trim($node->text());
+
+                if (preg_match($datetime_regex_pattern, $fullDateTime)) {
+                    return explode(' ', $fullDateTime)[0];
+                } else {
+                    return false;
+                }
+            });
+
+        $products['date'] = array_values(array_filter($date, fn($item): ?string => $item !== false))[0];
+
         return $products;
     }
 }
