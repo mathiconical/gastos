@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Coupon;
+use App\Models\Scopes\CouponVisibleScope;
 use App\Models\User;
 use App\Services\ProcessCouponService;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
@@ -54,20 +56,21 @@ class CouponSeeder extends Seeder
 
         $user = User::query()->first();
 
-        $data = [];
+        $data = collect();
         $keys->unique()->each(function ($key) use (&$data, $user) {
-            $data[] = [
+            $data->push([
                 'user_id' => $user->id,
                 'key' => $key,
                 'visible' => false,
                 'processed' => false,
                 'processed_timestamp' => '',
-            ];
+                'created_at' => Carbon::now()->toDateTimeString(),
+            ]);
         });
 
-        Coupon::query()->insert($data);
+        Coupon::query()->insert($data->toArray());
 
-        $coupons = Coupon::query()->get();
+        $coupons = Coupon::query()->withoutGlobalScopes([CouponVisibleScope::class])->get();
         new ProcessCouponService()->executeBatch($coupons);
     }
 }
