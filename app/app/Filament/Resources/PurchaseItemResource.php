@@ -22,7 +22,7 @@ class PurchaseItemResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-numbered-list';
 
-    protected static ?string $label = 'Items das Compras';
+    protected static ?string $label = 'Itens das Compras';
 
     protected static ?string $navigationGroup = 'Compras';
 

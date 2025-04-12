@@ -12,18 +12,29 @@ class PurchasesPerMonthChart extends ChartWidget
 
     protected static string $color = 'danger';
 
-    public ?string $filter = '2024';
+    protected int|string|array $columnSpan = 'full';
+
+    public function getColumnSpan(): int|string|array
+    {
+        return 2;
+    }
+
+    public static ?int $sort = 5;
+
+    public ?string $filter = 'lastYearInterval';
 
     protected static ?string $pollingInterval = null;
 
     protected function getFilters(): ?array
     {
         return Purchase::query()
+            ->orderBy('date', 'asc')
             ->get()
             ->map(fn($item): array => ['year' => $item->date->year])
             ->unique()
             ->values()
             ->pluck('year', 'year')
+            ->prepend('Todos os Anos', 'allYears')
             ->prepend('Ultimos 12 Meses', 'lastYearInterval')
             ->toArray();
     }
@@ -53,6 +64,10 @@ class PurchasesPerMonthChart extends ChartWidget
             return $purchases->filter(function ($item) {
                 return $item['date'] >= now()->subYear();
             });
+        }
+
+        if ($this->filter === 'allYears') {
+            return $purchases;
         }
 
         return $purchases->filter(function ($item) {
