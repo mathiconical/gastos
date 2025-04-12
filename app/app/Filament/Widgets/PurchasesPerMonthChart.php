@@ -5,7 +5,6 @@ namespace App\Filament\Widgets;
 use App\Models\Purchase;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class PurchasesPerMonthChart extends ChartWidget
 {
@@ -15,7 +14,7 @@ class PurchasesPerMonthChart extends ChartWidget
 
     public ?string $filter = '2024';
 
-    protected static ?string $pollingInterval = '10s';
+    protected static ?string $pollingInterval = null;
 
     protected function getFilters(): ?array
     {
