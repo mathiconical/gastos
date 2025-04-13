@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class PurchasesPerMonthChart extends ChartWidget
 {
-    protected static ?string $heading = 'Ultimos 12 Meses';
+    protected static ?string $heading = 'Relaçao de Gasto Ano / Mes';
 
     protected static string $color = 'danger';
 
@@ -24,6 +24,17 @@ class PurchasesPerMonthChart extends ChartWidget
     public ?string $filter = 'lastYearInterval';
 
     protected static ?string $pollingInterval = null;
+
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                ],
+            ],
+        ];
+    }
 
     protected function getFilters(): ?array
     {
@@ -44,12 +55,11 @@ class PurchasesPerMonthChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Compras Mensais',
+                    'label' => 'Compras Mensais R$ ',
                     'data' => $this->fillValuesIntoMonthsArray(),
                     'borderColor' => '#dc2662',
                 ],
             ],
-            'labels' => $this->getMonthsArray(),
         ];
     }
 
@@ -61,8 +71,9 @@ class PurchasesPerMonthChart extends ChartWidget
     private function applyFilter(Collection $purchases): Collection
     {
         if ($this->filter === 'lastYearInterval') {
+            $purchases = Purchase::query()->select('total', 'date')->where('date', '>=', now()->subYear()->format('Y-m-d'))->get();
             return $purchases->filter(function ($item) {
-                return $item['date'] >= now()->subYear();
+                return $item->date->format('Y-m') >= now()->subYear()->format('Y-m');
             });
         }
 
@@ -79,6 +90,7 @@ class PurchasesPerMonthChart extends ChartWidget
     {
         $purchases = Purchase::query()
             ->selectRaw("total, date")
+            ->orderBy('date', 'ASC')
             ->get()
             ->map(function ($item) {
                 return [
@@ -96,7 +108,8 @@ class PurchasesPerMonthChart extends ChartWidget
         foreach ($purchases as $purchase) {
             $monthIntIndex = intval(substr($purchase['date'], 5, 2)) - 1;
             $monthAbbrKey = $monthsArray[$monthIntIndex];
-            $data[$monthAbbrKey] = $purchase['total'];
+            $yearIndex = substr($purchase['date'], 0, 4);
+            $data[$yearIndex . '/' . $monthAbbrKey] = $purchase['total'];
         }
 
         return $data;
