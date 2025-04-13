@@ -16,6 +16,8 @@ class StatsRandomItemOverview extends BaseWidget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static ?string $pollingInterval = '5s';
+
     protected function getColumns(): int
     {
         return 1;
@@ -37,7 +39,18 @@ class StatsRandomItemOverview extends BaseWidget
             Stat::make('ITEM ALEATORIO', $item->product->name)
                 ->chart($total_purchase_item->toArray())
                 ->chartColor('info')
-                ->description('Quantidade: ' . $item->amount . ' ' . $item->unit->abbr . ', Valor Medio R$ ' . number_format($total_purchase_item->average(), 2, '.', ','))
+                ->description(
+                    'Quantidade: '
+                        . $item->amount
+                        . ' '
+                        . $item->unit->abbr
+                        . ', Valor Medio R$ '
+                        . number_format($total_purchase_item->average(), 2, '.', ',')
+                        . ', Valor Minimo R$ '
+                        . number_format($total_purchase_item->min(), 2, '.', ',')
+                        . ', Valor Maximo R$ '
+                        . number_format($total_purchase_item->max(), 2, '.', ',')
+                )
                 ->chartColor('success')
                 ->descriptionColor('success')
                 ->descriptionIcon('heroicon-o-shopping-cart', IconPosition::Before),
